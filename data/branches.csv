@@ -1,0 +1,6 @@
+id,name,area_type,address,lat,lng,open_time,close_time
+BR01,Sample Demo Bank — MG Road,URBAN_BUSINESS,"MG Road, Bengaluru (demo)",12.9756,77.6066,10:00,17:00
+BR02,Sample Demo Bank — Whitefield,RESIDENTIAL,"Whitefield, Bengaluru (demo)",12.9698,77.75,10:00,16:00
+BR03,Sample Demo Bank — Hoskote,SEMI_URBAN,"Market Road, Hoskote (demo)",13.0707,77.7981,10:00,16:00
+BR04,Sample Demo Bank — Jayanagar,SENIOR_HEAVY,"4th Block, Jayanagar, Bengaluru (demo)",12.925,77.5938,10:00,16:00
+BR05,Sample Demo Bank — Malleshwaram,COLLEGE_AREA,"Sampige Road, Malleshwaram, Bengaluru (demo)",13.0035,77.5709,10:00,16:00
