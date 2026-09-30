@@ -26,6 +26,8 @@ export interface CounterStaff {
   modeSkill: Skill;
   speed: number; // personal handle-time multiplier
   startMin: number;
+  /** Stops taking new customers from this minute (e.g. officer only helps during the peak). */
+  endMin?: number;
   breaks: { startMin: number; minutes: number }[];
 }
 
@@ -53,7 +55,7 @@ export interface VisitResult {
 }
 
 // Misrouting ground truth: service -> [target, probability]. Feeds the "most-transferred services" insight.
-const TRANSFERS: Record<string, [string, number][]> = {
+export const TRANSFERS: Record<string, [string, number][]> = {
   loan_enquiry: [["loan_application", 0.1]],
   complaint_dispute: [
     ["debit_card", 0.06],
@@ -95,7 +97,8 @@ export function replayDay(
   arrivals: Arrival[],
   staff: CounterStaff[],
   closeMin: number,
-  branchSpeed: number
+  branchSpeed: number,
+  mode: "BRANCHFLOW" | "FIFO" = "BRANCHFLOW"
 ): VisitResult[] {
   const results: VisitResult[] = [];
   const pending = arrivals.filter((a) => !a.bookedNoShow).sort((x, y) => x.arrivalMin - y.arrivalMin);
@@ -187,6 +190,7 @@ export function replayDay(
     for (const c of order) {
       if (c.freeAt > now) continue;
       if (c.current) finish(c);
+      if (c.cs.endMin != null && now >= c.cs.endMin) continue;
 
       const brk = c.breaks.find((b) => !b.taken && b.startMin <= now);
       if (brk) {
@@ -203,7 +207,8 @@ export function replayDay(
         if (!canServe(c.cs.skills, svc.skill)) continue;
         if (!appointmentEligible(now, w.a.appointmentStartMin)) continue;
         const appt = w.a.appointmentStartMin;
-        const { score } = scoreToken({
+        // FIFO baseline: single queue, oldest ticket first (no priority, appointment, focus or SLA logic)
+        const { score } = mode === "FIFO" ? { score: now - w.a.arrivalMin } : scoreToken({
           minutesWaited: now - w.a.arrivalMin,
           priorityFlag: w.a.priority,
           appointmentInWindow: appt != null && now >= appt && now <= appt + APPT_WINDOW,

@@ -143,6 +143,7 @@ export function issueToken(input: IssueInput, existingCodes: string[], ctx: Queu
     service_id: input.service_id,
     customer_name: input.customer_name ?? null,
     mobile_masked: input.mobile_masked ?? null,
+    language: "en",
     source: input.source,
     priority_flag: input.priority_flag ?? "NONE",
     status: appointment ? "BOOKED" : "WAITING",

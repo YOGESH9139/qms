@@ -91,6 +91,7 @@ export interface Counter {
   status_since: string;
   break_expected_end: string | null;
   break_reason: string | null;
+  human_control?: boolean;
 }
 
 export interface AiSummary {
@@ -108,6 +109,8 @@ export interface Token {
   service_id: string;
   customer_name: string | null;
   mobile_masked: string | null;
+  language?: "en" | "hi";
+  mobile_hash?: string | null;
   source: TokenSource;
   priority_flag: PriorityFlag;
   status: TokenStatus;
